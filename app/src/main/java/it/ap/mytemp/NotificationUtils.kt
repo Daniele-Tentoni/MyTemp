@@ -14,7 +14,7 @@ class NotificationUtils {
             alarmIntent.putExtra("reason", "notification")
             alarmIntent.putExtra("timestamp", timeInMilliSeconds)
 
-            // Set the alarm to start at approximately 2:00 p.m.
+            // Set the recurrent job at 9am and each half day.
             val calendar: Calendar = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
                 set(Calendar.HOUR_OF_DAY, 9)
@@ -27,7 +27,6 @@ class NotificationUtils {
                 PendingIntent.FLAG_CANCEL_CURRENT
             )
 
-            // Set the 2 recurrent job for 9am and 9pm.
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,

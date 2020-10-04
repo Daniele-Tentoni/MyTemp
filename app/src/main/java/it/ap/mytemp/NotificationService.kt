@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.media.RingtoneManager
 import android.os.Build
 import java.util.*
 
 class NotificationService : IntentService("NotificationService") {
+    private lateinit var builder: Notification.Builder
     private lateinit var mNotification: Notification
     private val mNotificationId: Int = 1000
 
@@ -36,8 +36,6 @@ class NotificationService : IntentService("NotificationService") {
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        createChannel()
-
         var timestamp: Long = 0
         if (intent != null && intent.extras != null) {
             timestamp = intent.extras!!.getLong("timestamp")
@@ -45,7 +43,7 @@ class NotificationService : IntentService("NotificationService") {
 
         if (timestamp > 0) {
             val context = this.applicationContext
-            var notificationManager =
+            val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val notifyIntent = Intent(this, NewTemperatureActivity::class.java)
 
@@ -67,33 +65,25 @@ class NotificationService : IntentService("NotificationService") {
                 notifyIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
-            val res = this.resources
-            val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                mNotification =
-                    Notification.Builder(this, getString(R.string.notification_channel_id))
-                        .setChannelId(getString(R.string.notification_channel_id))
-                        .setContentIntent(pendingIntent)
-                        .setSmallIcon(R.drawable.ic_baseline_add_24)
-                        .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
-                        .setAutoCancel(true)
-                        .setContentTitle(title)
-                        .setStyle(Notification.BigTextStyle().bigText(message))
-                        .setContentText(message).build()
+            builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createChannel()
+                val channelId = getString(R.string.notification_channel_id)
+                Notification.Builder(this, channelId)
+                    .setChannelId(channelId)
             } else {
-                mNotification = Notification.Builder(this)
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.ic_baseline_add_24)
-                    .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
-                    .setAutoCancel(true)
-                    .setContentTitle(title)
-                    .setStyle(Notification.BigTextStyle().bigText(message))
-                    .setContentText(message).build()
+                Notification.Builder(this)
             }
+
+            mNotification = builder
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_baseline_add_24)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher))
+                .setAutoCancel(true)
+                .setContentTitle(title)
+                .setStyle(Notification.BigTextStyle().bigText(message))
+                .setContentText(message).build()
             notificationManager.notify(mNotificationId, mNotification)
         }
     }
-
-    companion object
 }

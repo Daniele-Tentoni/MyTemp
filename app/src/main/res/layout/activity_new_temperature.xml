@@ -9,16 +9,22 @@
         android:layout_height="wrap_content"
         android:text="@string/temperature_label" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/edit_temperature"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/big_padding"
-        android:fontFamily="sans-serif-light"
-        android:hint="@string/hint_word"
-        android:inputType="numberDecimal"
-        android:minHeight="@dimen/min_height"
-        android:textSize="18sp" />
+        android:hint="@string/hint_temperature"
+        android:minHeight="@dimen/min_height">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:textSize="18sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_save"

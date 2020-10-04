@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">MyTemp</string>
     <string name="add_temperature">Add Temperature</string>
-    <string name="hint_word">Temperature...</string>
+    <string name="hint_temperature">Temperature</string>
     <string name="button_save">Save</string>
-    <string name="empty_not_saved">Word not saved because it is empty.</string>
+    <string name="empty_not_saved">Temperature not saved because it is empty.</string>
+    <string name="dead_message">Wait… You are DEAD!!!</string>
 
     <string name="date_string">%1$s at %2$s you had:</string>
 

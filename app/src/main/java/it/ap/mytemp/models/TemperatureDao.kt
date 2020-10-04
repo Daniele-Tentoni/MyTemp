@@ -14,4 +14,7 @@ interface TemperatureDao {
 
     @Query("DELETE FROM temperatures")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM temperatures WHERE 'temp' < 32 or 'temp' > 42")
+    suspend fun cleanFalseTemperatures()
 }

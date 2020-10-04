@@ -32,14 +32,14 @@ abstract class TemperatureRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     TemperatureRoomDatabase::class.java,
                     "temperature_database"
-                ).addCallback(WordDatabaseCallback(scope))
+                ).addCallback(TemperatureDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
                 return instance
             }
         }
 
-        private class WordDatabaseCallback(
+        private class TemperatureDatabaseCallback(
             private val scope: CoroutineScope
         ) : RoomDatabase.Callback() {
 
@@ -52,9 +52,9 @@ abstract class TemperatureRoomDatabase : RoomDatabase() {
                 }
             }
 
-            suspend fun populateDatabase(wordDao: TemperatureDao) {
+            suspend fun populateDatabase(temperatureDao: TemperatureDao) {
                 // Delete all content here.
-                // wordDao.deleteAll()
+                temperatureDao.cleanFalseTemperatures()
             }
         }
     }

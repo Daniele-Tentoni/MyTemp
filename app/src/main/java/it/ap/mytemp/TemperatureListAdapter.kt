@@ -28,8 +28,8 @@ class TemperatureListAdapter internal constructor(context: Context):RecyclerView
         holder.tempItemView.text = current.temp.toString()
     }
 
-    internal fun setWords(words: List<Temperature>) {
-        this.temperatures = words
+    internal fun setTemperatures(temperatures: List<Temperature>) {
+        this.temperatures = temperatures
         notifyDataSetChanged()
     }
 

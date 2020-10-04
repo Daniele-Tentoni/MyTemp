@@ -20,7 +20,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val newTemperatureActivityRequestCode = 1
-    private lateinit var wordViewModel: TemperatureViewModel
+    private lateinit var temperatureViewModel: TemperatureViewModel
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationChannel: NotificationChannel
     private lateinit var builder: Notification.Builder
@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        wordViewModel = ViewModelProvider(this).get(TemperatureViewModel::class.java)
-        wordViewModel.allTemperatures.observe(this, Observer { temps ->
-            // Update the cached copy of the words in the adapter.
-            temps?.let { adapter.setWords(it) }
+        temperatureViewModel = ViewModelProvider(this).get(TemperatureViewModel::class.java)
+        temperatureViewModel.allTemperatures.observe(this, Observer { temps ->
+            // Update the cached copy of the temperatures in the adapter.
+            temps?.let { adapter.setTemperatures(it) }
         })
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                     Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toString(),
                     it.toDouble()
                 )
-                wordViewModel.insert(temperature)
+                temperatureViewModel.insert(temperature)
             }
         } else {
             Toast.makeText(

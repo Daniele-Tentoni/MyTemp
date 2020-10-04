@@ -1,4 +1,4 @@
-package it.ap.mytemp
+package it.ap.mytemp.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

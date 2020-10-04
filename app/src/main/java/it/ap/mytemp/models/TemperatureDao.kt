@@ -1,7 +1,8 @@
-package it.ap.mytemp
+package it.ap.mytemp.models
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import it.ap.mytemp.models.Temperature
 
 @Dao
 interface TemperatureDao {

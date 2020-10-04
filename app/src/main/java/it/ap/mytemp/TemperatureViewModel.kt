@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import it.ap.mytemp.models.Temperature
+import it.ap.mytemp.models.TemperatureDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package it.ap.mytemp
+package it.ap.mytemp.notifications
 
 import android.app.*
 import android.content.Context
@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
+import it.ap.mytemp.NewTemperatureActivity
+import it.ap.mytemp.R
 
 class NotificationService : IntentService("NotificationService") {
     private lateinit var builder: Notification.Builder

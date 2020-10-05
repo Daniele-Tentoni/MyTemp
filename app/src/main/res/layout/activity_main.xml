@@ -57,11 +57,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="@dimen/big_padding"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_google_container"
-        tools:listitem="@layout/recyclerview_item" />
+        tools:listitem="@layout/temperature_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

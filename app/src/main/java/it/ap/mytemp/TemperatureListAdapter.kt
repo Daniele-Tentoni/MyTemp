@@ -19,10 +19,11 @@ class TemperatureListAdapter internal constructor(context: Context) :
         val tempItemView: TextView = itemView.findViewById(R.id.tempView)
         val coughIcon: ImageView = itemView.findViewById(R.id.cough_icon)
         val coldIcon: ImageView = itemView.findViewById(R.id.cold_icon)
+        val notesText: TextView = itemView.findViewById(R.id.notes_text)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemperatureViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
+        val itemView = inflater.inflate(R.layout.temperature_item, parent, false)
         return TemperatureViewHolder(itemView)
     }
 
@@ -35,6 +36,12 @@ class TemperatureListAdapter internal constructor(context: Context) :
             if (current.cough != null && current.cough) View.VISIBLE else View.GONE
         holder.coldIcon.visibility =
             if (current.cold != null && current.cold) View.VISIBLE else View.GONE
+        if (!current.notes?.isEmpty()!!) {
+            holder.notesText.visibility = View.VISIBLE
+            holder.notesText.text = current.notes.toString()
+        } else {
+            holder.notesText.visibility = View.VISIBLE
+        }
     }
 
     internal fun setTemperatures(temperatures: List<Temperature>) {

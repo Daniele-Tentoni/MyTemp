@@ -1,4 +1,4 @@
-package it.ap.mytemp
+package it.ap.mytemp.notifications
 
 import android.content.BroadcastReceiver
 import android.content.Context

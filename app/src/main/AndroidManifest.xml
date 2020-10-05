@@ -24,10 +24,10 @@
         </activity>
 
         <receiver
-            android:name=".AlarmReceiver"
+            android:name=".notifications.AlarmReceiver"
             android:enabled="true" />
         <service
-            android:name=".NotificationService"
+            android:name=".notifications.NotificationService"
             android:enabled="true" />
     </application>
 </manifest>

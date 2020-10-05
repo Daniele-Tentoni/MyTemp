@@ -1,10 +1,11 @@
-package it.ap.mytemp
+package it.ap.mytemp.notifications
 
 import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import it.ap.mytemp.R
 import java.util.*
 
 class NotificationUtils {
@@ -35,6 +36,11 @@ class NotificationUtils {
                 AlarmManager.INTERVAL_HALF_DAY,
                 pendingIntent
             )
+
+            with(pref.edit()) {
+                putBoolean(activity.getString(R.string.notification_already_set), true)
+                apply()
+            }
         }
     }
 }

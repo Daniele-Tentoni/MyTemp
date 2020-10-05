@@ -28,10 +28,13 @@ class TemperatureListAdapter internal constructor(context: Context) :
 
     override fun onBindViewHolder(holder: TemperatureViewHolder, position: Int) {
         val current = temperatures[position]
-        holder.dateItemView.text = inflater.context.getString(R.string.date_string, current.day, current.hour)
+        holder.dateItemView.text =
+            inflater.context.getString(R.string.date_string, current.day, current.hour)
         holder.tempItemView.text = current.temp.toString()
-        holder.coughIcon.visibility = if(current.cough != null && current.cough) View.VISIBLE else View.GONE
-        holder.coldIcon.visibility = if(current.cold != null && current.cold) View.VISIBLE else View.GONE
+        holder.coughIcon.visibility =
+            if (current.cough != null && current.cough) View.VISIBLE else View.GONE
+        holder.coldIcon.visibility =
+            if (current.cold != null && current.cold) View.VISIBLE else View.GONE
     }
 
     internal fun setTemperatures(temperatures: List<Temperature>) {

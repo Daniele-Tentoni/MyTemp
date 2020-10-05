@@ -1,14 +1,11 @@
 package it.ap.mytemp
 
-import android.app.*
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -26,14 +23,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import it.ap.mytemp.data.models.Temperature
 import kotlinx.android.synthetic.main.activity_main.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val newTemperatureActivityRequestCode = 0
     private lateinit var temperatureViewModel: TemperatureViewModel
-    private lateinit var notificationManager: NotificationManager
-    private lateinit var notificationChannel: NotificationChannel
-    private lateinit var builder: Notification.Builder
     private lateinit var firebaseAuth: FirebaseAuth
     private val signInRequestCode: Int = 1
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -62,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, newTemperatureActivityRequestCode)
         }
 
-        NotificationUtils().setNotification(Calendar.getInstance().timeInMillis + 5000, this@MainActivity)
+        NotificationUtils().setRecurrentNotification(this@MainActivity)
         configureGoogleSignIn()
     }
 
@@ -81,9 +77,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        google_button.visibility = if(user != null) View.GONE else View.VISIBLE
-        google_account.visibility = if(user != null) View.VISIBLE else View.GONE
-        if(user != null) {
+        google_button.visibility = if (user != null) View.GONE else View.VISIBLE
+        google_account.visibility = if (user != null) View.VISIBLE else View.GONE
+        if (user != null) {
             google_button.setOnClickListener {
                 signIn()
             }
@@ -104,21 +100,30 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == newTemperatureActivityRequestCode && resultCode == Activity.RESULT_OK) {
             data?.let {
-                val temp = it.getDoubleExtra(NewTemperatureActivity.TEMPERATURE, 36.5)
+                val temp = it.getDoubleExtra(NewTemperatureActivity.TEMP, 36.5)
                 val notes = it.getStringExtra(NewTemperatureActivity.NOTES)
                 val cough = it.getBooleanExtra(NewTemperatureActivity.COUGH, false)
                 val cold =
                     it.getBooleanExtra(NewTemperatureActivity.COLD, false)
-                val temperature = Temperature(
-                    0,
-                    Calendar.getInstance().get(Calendar.LONG_FORMAT).toString(),
-                    Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toString(),
-                    temp,
-                    cough,
-                    cold,
-                    notes!!
-                )
-                temperatureViewModel.insert(temperature)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val current = LocalDateTime.now()
+                    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+                    val date = current.format(dateFormatter)
+                    val time = current.format(timeFormatter)
+                    val temperature = Temperature(0, date, time, temp, cough, cold, notes!!)
+                    temperatureViewModel.insert(temperature)
+                } else {
+                    val year = Calendar.getInstance().get(Calendar.YEAR).toString()
+                    val month = Calendar.getInstance().get(Calendar.MONTH).toString()
+                    val day = Calendar.getInstance().get(Calendar.DATE).toString()
+                    val date = "$year $month $day"
+                    val hour = Calendar.getInstance().get(Calendar.HOUR).toString()
+                    val min = Calendar.getInstance().get(Calendar.MINUTE).toString()
+                    val time = "${hour}:${min}"
+                    val temperature = Temperature(0, date, time, temp, cough, cold, notes!!)
+                    temperatureViewModel.insert(temperature)
+                }
             }
         } else if (requestCode == signInRequestCode) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -142,7 +147,11 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 val newUser = it.result?.user
-                Toast.makeText(this, "${newUser?.displayName} sign in successful :)", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "${newUser?.displayName} sign in successful :)",
+                    Toast.LENGTH_LONG
+                ).show()
                 updateUI(newUser)
             } else {
                 Toast.makeText(this, "Google sign in failed :(", Toast.LENGTH_LONG).show()
@@ -154,42 +163,5 @@ class MainActivity : AppCompatActivity() {
         fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
-    }
-
-    private fun createNotification() {
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val intent = Intent(this, NewTemperatureActivity::class.java)
-        val pendingIntent =
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannel = NotificationChannel(
-                getString(R.string.notification_channel_id),
-                getString(R.string.notification_title),
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.GREEN
-            notificationChannel.enableVibration(false)
-            notificationManager.createNotificationChannel(notificationChannel)
-
-            builder = Notification.Builder(this, getString(R.string.notification_channel_id))
-                .setChannelId(getString(R.string.notification_channel_id))
-        } else {
-            builder = Notification.Builder(this)
-        }
-
-        builder = builder
-            .setContentTitle(getString(R.string.notification_title))
-            .setContentText(getString(R.string.notification_title))
-            .setSmallIcon(R.drawable.ic_baseline_add_24)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    this.resources,
-                    R.drawable.ic_launcher_background
-                )
-            )
-            .setContentIntent(pendingIntent)
-        notificationManager.notify(1234, builder.build())
     }
 }

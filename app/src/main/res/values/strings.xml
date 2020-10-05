@@ -14,6 +14,7 @@
     <string name="notification_channel_description">Basic MyTemp Notifications.</string>
     <string name="notification_title">New Temperature required</string>
     <string name="notification_message">Take temperature as soon as possible</string>
+    <string name="notification_already_set">notification_already_set</string>
 
     <!-- New Temperature activity -->
     <string name="temperature_label">Input here you actual body temperature.</string>

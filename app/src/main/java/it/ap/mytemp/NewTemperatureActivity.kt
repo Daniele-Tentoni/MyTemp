@@ -22,12 +22,12 @@ class NewTemperatureActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                val temperature = edit_temperature.text.toString()
+                val temperature = edit_temperature.text.toString().toDouble()
                 val notes = edit_other_notes.text.toString()
                 val cough = cough_check.isChecked
                 val cold = cold_check.isChecked
-                if (temperature.toDouble() > 32 && temperature.toDouble() < 41) {
-                    replyIntent.putExtra(TEMPERATURE, temperature)
+                if (temperature > 32 && temperature.toDouble() < 41) {
+                    replyIntent.putExtra(TEMP, temperature)
                     replyIntent.putExtra(COUGH, cough)
                     replyIntent.putExtra(COLD, cold)
                     replyIntent.putExtra(NOTES, notes)
@@ -46,9 +46,9 @@ class NewTemperatureActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TEMPERATURE = "it.ap.mytemp.temperaturelistsql.REPLY"
-        const val COUGH = "it.ap.mytemp.temperaturelistsql.REPLY"
-        const val COLD = "it.ap.mytemp.temperaturelistsql.REPLY"
-        const val NOTES = "it.ap.mytemp.temperaturelistsql.REPLY"
+        const val TEMP = "it.ap.mytemp.temperaturelistsql.TEMP"
+        const val COUGH = "it.ap.mytemp.temperaturelistsql.COUGH"
+        const val COLD = "it.ap.mytemp.temperaturelistsql.COLD"
+        const val NOTES = "it.ap.mytemp.temperaturelistsql.NOTES"
     }
 }

@@ -12,5 +12,5 @@ data class Temperature(
     val temp: Double,
     val cough: Boolean?,
     val cold: Boolean?,
-    val notes: String?
+    val notes: String? // TODO: Add more flags.
 )

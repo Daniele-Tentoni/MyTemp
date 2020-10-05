@@ -3,16 +3,18 @@ package it.ap.mytemp
 import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import java.util.*
 
 class NotificationUtils {
-    fun setNotification(timeInMilliSeconds: Long, activity: Activity) {
-        if (timeInMilliSeconds > 0) {
+    fun setRecurrentNotification(activity: Activity) {
+        val pref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+        val notification =
+            pref.getBoolean(activity.getString(R.string.notification_already_set), false)
+        if (!notification) { // If
             val alarmManager = activity.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
             val alarmIntent = Intent(activity.applicationContext, AlarmReceiver::class.java)
-            alarmIntent.putExtra("reason", "notification")
-            alarmIntent.putExtra("timestamp", timeInMilliSeconds)
 
             // Set the recurrent job at 9am and each half day.
             val calendar: Calendar = Calendar.getInstance().apply {

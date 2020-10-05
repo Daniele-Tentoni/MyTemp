@@ -2,9 +2,9 @@
     <string name="app_name" translatable="false">MyTemp</string>
     <string name="add_temperature">Add Temperature</string>
 
-    <string name="average_temperature">Average: %1$d</string>
-    <string name="max_temperature">Max: %1$d</string>
-    <string name="min_temperature">Min: %1$d</string>
+    <string name="average_temperature">Average: %1$f</string>
+    <string name="max_temperature">Max: %1$f</string>
+    <string name="min_temperature">Min: %1$f</string>
 
     <string name="cough_description">You had cough.</string>
     <string name="cold_description">You had cold.</string>

@@ -6,28 +6,45 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import it.ap.mytemp.models.Temperature
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val newTemperatureActivityRequestCode = 1
+    private val newTemperatureActivityRequestCode = 0
     private lateinit var temperatureViewModel: TemperatureViewModel
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationChannel: NotificationChannel
     private lateinit var builder: Notification.Builder
+    private lateinit var firebaseAuth: FirebaseAuth
+    private val signInRequestCode: Int = 1
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var mGoogleSignInOptions: GoogleSignInOptions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Authentication
+        firebaseAuth = FirebaseAuth.getInstance()
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = TemperatureListAdapter(this)
@@ -40,13 +57,46 @@ class MainActivity : AppCompatActivity() {
             temps?.let { adapter.setTemperatures(it) }
         })
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewTemperatureActivity::class.java)
             startActivityForResult(intent, newTemperatureActivityRequestCode)
         }
 
         NotificationUtils().setNotification(Calendar.getInstance().timeInMillis + 5000, this@MainActivity)
+        configureGoogleSignIn()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val user = firebaseAuth.currentUser
+        updateUI(user)
+    }
+
+    private fun configureGoogleSignIn() {
+        mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        google_button.visibility = if(user != null) View.GONE else View.VISIBLE
+        google_account.visibility = if(user != null) View.VISIBLE else View.GONE
+        if(user != null) {
+            google_button.setOnClickListener {
+                signIn()
+            }
+        } else {
+            user?.let {
+                google_account.text = it.displayName
+            }
+        }
+    }
+
+    private fun signIn() {
+        val signInIntent: Intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, signInRequestCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -62,12 +112,37 @@ class MainActivity : AppCompatActivity() {
                 )
                 temperatureViewModel.insert(temperature)
             }
+        } else if (requestCode == signInRequestCode) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account)
+            } catch (e: ApiException) {
+                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+            }
         } else {
             Toast.makeText(
                 applicationContext,
                 R.string.empty_not_saved,
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
+        val credential = GoogleAuthProvider.getCredential(acct?.idToken, null)
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Toast.makeText(this, "Google sign in success:)", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    companion object {
+        fun getLaunchIntent(from: Context) = Intent(from, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 

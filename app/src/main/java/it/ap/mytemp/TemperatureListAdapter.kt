@@ -8,11 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import it.ap.mytemp.models.Temperature
 
-class TemperatureListAdapter internal constructor(context: Context):RecyclerView.Adapter<TemperatureListAdapter.TemperatureViewHolder>() {
+class TemperatureListAdapter internal constructor(context: Context) :
+    RecyclerView.Adapter<TemperatureListAdapter.TemperatureViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var temperatures = emptyList<Temperature>()
 
-    inner class TemperatureViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class TemperatureViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateItemView: TextView = itemView.findViewById(R.id.dateView)
         val tempItemView: TextView = itemView.findViewById(R.id.tempView)
     }
@@ -24,7 +25,8 @@ class TemperatureListAdapter internal constructor(context: Context):RecyclerView
 
     override fun onBindViewHolder(holder: TemperatureViewHolder, position: Int) {
         val current = temperatures[position]
-        holder.dateItemView.text = inflater.context.getString(R.string.date_string, current.day, current.hour)
+        holder.dateItemView.text =
+            inflater.context.getString(R.string.date_string, current.day, current.hour)
         holder.tempItemView.text = current.temp.toString()
     }
 

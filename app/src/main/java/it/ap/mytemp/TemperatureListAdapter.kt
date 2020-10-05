@@ -1,6 +1,7 @@
 package it.ap.mytemp
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,15 +33,21 @@ class TemperatureListAdapter internal constructor(context: Context) :
         holder.dateItemView.text =
             inflater.context.getString(R.string.date_string, current.day, current.hour)
         holder.tempItemView.text = current.temp.toString()
+        if (current.temp >= 37 && current.temp < 37.5)
+            holder.tempItemView.setBackgroundColor(Color.YELLOW)
+        else if (current.temp >= 37.5)
+            holder.tempItemView.setBackgroundColor(Color.RED)
+        else
+            holder.tempItemView.setBackgroundColor(Color.TRANSPARENT)
         holder.coughIcon.visibility =
             if (current.cough != null && current.cough) View.VISIBLE else View.GONE
         holder.coldIcon.visibility =
             if (current.cold != null && current.cold) View.VISIBLE else View.GONE
-        if (!current.notes?.isEmpty()!!) {
+        if (current.notes != null && current.notes.isNotEmpty()) {
             holder.notesText.visibility = View.VISIBLE
             holder.notesText.text = current.notes.toString()
         } else {
-            holder.notesText.visibility = View.VISIBLE
+            holder.notesText.visibility = View.GONE
         }
     }
 

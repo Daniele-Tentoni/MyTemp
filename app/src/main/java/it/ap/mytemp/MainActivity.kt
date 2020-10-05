@@ -51,7 +51,16 @@ class MainActivity : AppCompatActivity() {
         temperatureViewModel = ViewModelProvider(this).get(TemperatureViewModel::class.java)
         temperatureViewModel.allTemperatures.observe(this, Observer { temps ->
             // Update the cached copy of the temperatures in the adapter.
-            temps?.let { adapter.setTemperatures(it) }
+            temps?.let {
+                adapter.setTemperatures(it)
+                val min = it.minBy { temperature -> temperature.temp }
+                val sum = it.sumByDouble { temperature -> temperature.temp }
+                val max = it.maxBy { temperature -> temperature.temp }
+                val avg = sum / it.count()
+                min_temperature.text = getString(R.string.min_temperature, min?.temp)
+                avg_temperature.text = getString(R.string.average_temperature, avg)
+                max_temperature.text = getString(R.string.max_temperature, max?.temp)
+            }
         })
 
         fab.setOnClickListener {

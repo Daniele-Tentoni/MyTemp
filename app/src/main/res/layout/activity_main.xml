@@ -7,32 +7,14 @@
     tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_temp_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/big_padding"
-        app:layout_constraintBottom_toTopOf="@id/card_google_container"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/average_temperature"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/big_padding"
-            android:text="Show average temperature" />
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
         android:id="@+id/card_google_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/big_padding"
-        app:layout_constraintBottom_toTopOf="@id/recyclerview"
+        app:layout_constraintBottom_toTopOf="@id/card_temp_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_temp_container">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_button"
@@ -52,6 +34,62 @@
             android:visibility="gone" />
     </androidx.cardview.widget.CardView>
 
+    <LinearLayout
+        android:id="@+id/card_temp_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="true"
+        android:orientation="horizontal"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/recyclerview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_google_container">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/min_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/big_padding">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/min_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/big_padding"
+                android:text="@string/min_temperature" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/avg_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/big_padding">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/avg_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/big_padding"
+                android:text="@string/average_temperature" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/max_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/big_padding">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/max_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/big_padding"
+                android:text="@string/max_temperature" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="0dp"
@@ -61,7 +99,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_google_container"
+        app:layout_constraintTop_toBottomOf="@id/card_temp_container"
         tools:listitem="@layout/temperature_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

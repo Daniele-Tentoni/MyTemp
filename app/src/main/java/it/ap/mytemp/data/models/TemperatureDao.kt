@@ -2,6 +2,7 @@ package it.ap.mytemp.data.models
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import java.sql.Types.NULL
 
 @Dao
 interface TemperatureDao {
@@ -14,6 +15,6 @@ interface TemperatureDao {
     @Query("DELETE FROM temperatures")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM temperatures WHERE 'temp' < 32 AND 'temp' > 42")
+    @Query("DELETE FROM temperatures WHERE 'temp' < 32 AND 'temp' > 42 OR 'temp' = 36.5 AND 'notes' IS NULL")
     suspend fun cleanFalseTemperatures()
 }

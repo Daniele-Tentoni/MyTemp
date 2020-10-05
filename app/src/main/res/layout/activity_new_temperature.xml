@@ -7,7 +7,18 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginEnd="@dimen/big_padding"
         android:text="@string/temperature_label" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginEnd="@dimen/big_padding"
+        android:text="@string/general_tip" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textField"
@@ -22,6 +33,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
+            android:textSize="18sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/cough_check"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:text="@string/cough_label" />
+
+    <CheckBox
+        android:id="@+id/cold_check"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:text="@string/cold_label" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/other_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:hint="@string/hint_other_notes"
+        android:minHeight="@dimen/min_height">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_other_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textSize="18sp" />
 
     </com.google.android.material.textfield.TextInputLayout>

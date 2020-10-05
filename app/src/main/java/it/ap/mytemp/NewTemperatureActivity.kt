@@ -2,25 +2,19 @@ package it.ap.mytemp
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_new_temperature.*
 
 class NewTemperatureActivity : AppCompatActivity() {
-    private lateinit var editTemperatureView: EditText
-
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_temperature)
-        editTemperatureView = findViewById(R.id.edit_temperature)
 
-        val button = findViewById<Button>(R.id.button_save)
-        button.setOnClickListener {
+        button_save.setOnClickListener {
             val replyIntent = Intent()
-            if (TextUtils.isEmpty(editTemperatureView.text)) {
+            if (edit_temperature.text!!.isEmpty()) {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
                 Toast.makeText(
                     applicationContext,
@@ -28,9 +22,15 @@ class NewTemperatureActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                val temperature = editTemperatureView.text.toString()
+                val temperature = edit_temperature.text.toString()
+                val notes = edit_other_notes.text.toString()
+                val cough = cough_check.isChecked
+                val cold = cold_check.isChecked
                 if (temperature.toDouble() > 32 && temperature.toDouble() < 41) {
-                    replyIntent.putExtra(EXTRA_REPLY, temperature)
+                    replyIntent.putExtra(TEMPERATURE, temperature)
+                    replyIntent.putExtra(COUGH, cough)
+                    replyIntent.putExtra(COLD, cold)
+                    replyIntent.putExtra(NOTES, notes)
                     setResult(Activity.RESULT_OK, replyIntent)
                     finish()
                 } else {
@@ -46,6 +46,9 @@ class NewTemperatureActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_REPLY = "com.example.android.temperaturelistsql.REPLY"
+        const val TEMPERATURE = "it.ap.mytemp.temperaturelistsql.REPLY"
+        const val COUGH = "it.ap.mytemp.temperaturelistsql.REPLY"
+        const val COLD = "it.ap.mytemp.temperaturelistsql.REPLY"
+        const val NOTES = "it.ap.mytemp.temperaturelistsql.REPLY"
     }
 }

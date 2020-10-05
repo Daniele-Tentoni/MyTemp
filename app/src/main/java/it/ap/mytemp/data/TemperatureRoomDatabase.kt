@@ -1,16 +1,18 @@
-package it.ap.mytemp
+package it.ap.mytemp.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import it.ap.mytemp.models.Temperature
-import it.ap.mytemp.models.TemperatureDao
+import it.ap.mytemp.data.models.Temperature
+import it.ap.mytemp.data.models.TemperatureDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [Temperature::class], version = 1, exportSchema = false)
+
+@Database(entities = [Temperature::class], version = 2, exportSchema = false)
 abstract class TemperatureRoomDatabase : RoomDatabase() {
     abstract fun temperatureDao(): TemperatureDao
 
@@ -27,12 +29,22 @@ abstract class TemperatureRoomDatabase : RoomDatabase() {
                 return tempInstance
             }
 
+            val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    database.execSQL("ALTER TABLE temperatures ADD COLUMN cough INTEGER")
+                    database.execSQL("ALTER TABLE temperatures ADD COLUMN cold INTEGER")
+                    database.execSQL("ALTER TABLE temperatures ADD COLUMN notes TEXT")
+                }
+            }
+
             synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     TemperatureRoomDatabase::class.java,
                     "temperature_database"
-                ).addCallback(TemperatureDatabaseCallback(scope))
+                )
+                    .addMigrations(MIGRATION_1_2)
+                    .addCallback(TemperatureDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
                 return instance

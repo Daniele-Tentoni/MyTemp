@@ -1,8 +1,8 @@
-package it.ap.mytemp
+package it.ap.mytemp.repos
 
 import androidx.lifecycle.LiveData
-import it.ap.mytemp.models.Temperature
-import it.ap.mytemp.models.TemperatureDao
+import it.ap.mytemp.data.models.Temperature
+import it.ap.mytemp.data.models.TemperatureDao
 
 class TemperaturesRepository(private val temperatureDao: TemperatureDao) {
     val allTemperatures: LiveData<List<Temperature>> = temperatureDao.getTemperatures()

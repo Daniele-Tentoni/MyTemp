@@ -24,7 +24,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import it.ap.mytemp.models.Temperature
+import it.ap.mytemp.data.models.Temperature
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -103,12 +103,20 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == newTemperatureActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(NewTemperatureActivity.EXTRA_REPLY)?.let {
+            data?.let {
+                val temp = it.getDoubleExtra(NewTemperatureActivity.TEMPERATURE, 36.5)
+                val notes = it.getStringExtra(NewTemperatureActivity.NOTES)
+                val cough = it.getBooleanExtra(NewTemperatureActivity.COUGH, false)
+                val cold =
+                    it.getBooleanExtra(NewTemperatureActivity.COLD, false)
                 val temperature = Temperature(
                     0,
                     Calendar.getInstance().get(Calendar.LONG_FORMAT).toString(),
                     Calendar.getInstance().get(Calendar.HOUR_OF_DAY).toString(),
-                    it.toDouble()
+                    temp,
+                    cough,
+                    cold,
+                    notes!!
                 )
                 temperatureViewModel.insert(temperature)
             }
@@ -133,9 +141,11 @@ class MainActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(acct?.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
-                Toast.makeText(this, "Google sign in success:)", Toast.LENGTH_LONG).show()
+                val newUser = it.result?.user
+                Toast.makeText(this, "${newUser?.displayName} sign in successful :)", Toast.LENGTH_LONG).show()
+                updateUI(newUser)
             } else {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Google sign in failed :(", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -151,7 +161,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, NewTemperatureActivity::class.java)
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val contentView = RemoteViews(packageName, R.layout.activity_new_temperature)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannel = NotificationChannel(

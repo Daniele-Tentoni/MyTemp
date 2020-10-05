@@ -1,15 +1,16 @@
 <resources>
-    <string name="app_name">MyTemp</string>
+    <string name="app_name" translatable="false">MyTemp</string>
     <string name="add_temperature">Add Temperature</string>
-    <string name="hint_temperature">Temperature</string>
     <string name="button_save">Save</string>
     <string name="empty_not_saved">Temperature not saved because it is empty.</string>
     <string name="dead_message">Wait… You are DEAD!!!</string>
 
     <string name="date_string">%1$s at %2$s you had:</string>
+    <string name="cough_description">You had cough.</string>
+    <string name="cold_description">You had cold.</string>
 
     <!-- Notifications -->
-    <string name="notification_channel_id">it.ap.mytemp.notifications</string>
+    <string name="notification_channel_id" translatable="false">it.ap.mytemp.notifications</string>
     <string name="notification_channel_description">Basic MyTemp Notifications.</string>
     <string name="notification_title">New Temperature required</string>
     <string name="notification_message">Take temperature as soon as possible</string>
@@ -17,4 +18,8 @@
     <!-- New Temperature activity -->
     <string name="temperature_label">Input here you actual body temperature.</string>
     <string name="general_tip">If you have more than 37.5, instantly alert you doctor!</string>
+    <string name="cough_label">Cough</string>
+    <string name="cold_label">Cold</string>
+    <string name="hint_temperature">Temperature</string>
+    <string name="hint_other_notes">Other notes</string>
 </resources>

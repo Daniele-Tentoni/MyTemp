@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             user?.let {
-                google_account.text = it.displayName
+                google_account.text = if(it.displayName.isNullOrEmpty()) it.displayName else it.email
             }
         }
     }
